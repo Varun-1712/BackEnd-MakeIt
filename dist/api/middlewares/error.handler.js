@@ -1,0 +1,13 @@
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = errorHandler;
+// Error handler to display the error as HTML
+// eslint-disable-next-line no-unused-vars, no-shadow
+function errorHandler(err, req, res, next) {
+  res.status(err.status || 500);
+  res.send(`<h1>${err.status || 500} Error</h1>` + `<pre>${err.message}</pre>`);
+}
+//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJuYW1lcyI6WyJlcnJvckhhbmRsZXIiLCJlcnIiLCJyZXEiLCJyZXMiLCJuZXh0Iiwic3RhdHVzIiwic2VuZCIsIm1lc3NhZ2UiXSwic291cmNlcyI6WyIuLi8uLi8uLi9zZXJ2ZXIvYXBpL21pZGRsZXdhcmVzL2Vycm9yLmhhbmRsZXIuanMiXSwic291cmNlc0NvbnRlbnQiOlsiXG4vLyBFcnJvciBoYW5kbGVyIHRvIGRpc3BsYXkgdGhlIGVycm9yIGFzIEhUTUxcbi8vIGVzbGludC1kaXNhYmxlLW5leHQtbGluZSBuby11bnVzZWQtdmFycywgbm8tc2hhZG93XG5leHBvcnQgZGVmYXVsdCBmdW5jdGlvbiBlcnJvckhhbmRsZXIoZXJyLCByZXEsIHJlcywgbmV4dCkge1xuICByZXMuc3RhdHVzKGVyci5zdGF0dXMgfHwgNTAwKTtcbiAgcmVzLnNlbmQoXG4gICAgYDxoMT4ke2Vyci5zdGF0dXMgfHwgNTAwfSBFcnJvcjwvaDE+YCArXG4gICAgYDxwcmU+JHtlcnIubWVzc2FnZX08L3ByZT5gKTtcbn1cblxuIl0sIm1hcHBpbmdzIjoiOzs7Ozs7QUFDQTtBQUNBO0FBQ2UsU0FBU0EsWUFBWSxDQUFDQyxHQUFHLEVBQUVDLEdBQUcsRUFBRUMsR0FBRyxFQUFFQyxJQUFJLEVBQUU7RUFDeERELEdBQUcsQ0FBQ0UsTUFBTSxDQUFDSixHQUFHLENBQUNJLE1BQU0sSUFBSSxHQUFHLENBQUM7RUFDN0JGLEdBQUcsQ0FBQ0csSUFBSSxDQUNMLE9BQU1MLEdBQUcsQ0FBQ0ksTUFBTSxJQUFJLEdBQUksYUFBWSxHQUNwQyxRQUFPSixHQUFHLENBQUNNLE9BQVEsUUFBTyxDQUFDO0FBQ2hDIn0=

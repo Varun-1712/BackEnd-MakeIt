@@ -1,0 +1,880 @@
+swagger: "2.0"
+info:
+  version: 1.0.0
+  title: Make-It
+  description: "An eCommerce platform with a focus on customizable products."
+basePath: /api/v1
+consumes:
+  - application/json
+produces:
+  - application/json
+
+definitions:
+  User:
+    type: object
+    properties:
+      user_id:
+        type: string
+      name:
+        type: string
+      email:
+        type: string
+      password:
+        type: string
+      address:
+        type: array
+        items:
+          type: string
+      wishlist:
+        type: array
+        items:
+          type: string
+      mobile:
+        type: number
+      role:
+        type: string
+  Order:
+    type: object
+    properties:
+      order_id:
+        type: string
+      user_id:
+        type: string
+      product_id:
+        type: string
+      size:
+        type: string
+      status:
+        type: object
+        properties:
+          status:
+            type: string
+          date:
+            type: string
+          TextData:
+            type: array
+            items:
+              type: string
+          ImageData:
+            type: array
+            items:
+              type: string
+        created_at:
+          type: number
+
+  Cart:
+    type: object
+    title: Cart
+    required:
+    properties:
+      product_id:
+        type: string
+        example: 61d82e16caccbc1f64a8d1ab
+      size:
+        type: string
+        example: XL
+      user_id:
+        type: string
+        example: 61d82e16caccbc1f64a8d1ab
+      attachmentFiles:
+        type: array
+        items:
+          type: string
+          example: ["https://bit.ly/3zCnHVv", "https://bit.ly/3zCnHVv"]
+  Product:
+    type: object
+    title: Product
+    required:
+    properties:
+      product_id:
+        type: string
+        example: 61d82e16caccbc1f64a8d1ab
+      Title:
+        type: string
+        example: London Hills Men's Regular Fit Printed Full Sleeve Soft & Strong T-Shirt
+      price:
+        type: number
+        example: 499
+      user_id:
+        type: string
+        example: 61d82e16caccbc1f64a8d1ab
+      images:
+        type: array
+        items:
+          type: string
+        example: ["https://bit.ly/3zCnHVv", "https://bit.ly/3zCnHVv"]
+
+      requiredAttachments:
+        type: array
+        items:
+          type: object
+          properties:
+            title:
+              type: string
+            description:
+              type: string
+        example:
+          [
+            { title: "Front", description: "Description of Front" },
+            { title: "Back", description: "Description of Back" },
+          ]
+
+      specification:
+        type: array
+        example:
+          [
+            { "name": "Neck", "value": "Polo" },
+            { "name": "Neck", "value": "Polo" },
+          ]
+      various_size:
+        type: array
+        items:
+          type: string
+        example: ["S", "M", "L", "XL"]
+  Review:
+    type: object
+    title: Review
+    required:
+    properties:
+      review_id:
+        type: string
+        example: 61d82e16caccbc1f64a8d1ab
+      product_id:
+        type: string
+        example: 61d82e16caccbc1f64a8d1ab
+      user_id:
+        type: string
+        example: 61d82e16caccbc1f64a8d1ab
+      description:
+        type: string
+        example: "This is a good product"
+      rating:
+        type: number
+        example: 4
+      timestamp:
+        type: number
+        example: 1569098983
+  Seller:
+    type: object
+    title: Seller
+    required:
+    properties:
+      seller_id:
+        type: string
+        example: 61d82e16caccbc1f64a8d1ab
+      user_id:
+        type: string
+        example: 61d82e16caccbc1f64a8d1ab
+      shop_name:
+        type: string
+        example: "John Doe"
+      gst_in:
+        type: string
+        example: "GSTIN"
+      pickup_address:
+        type: object
+        properties:
+          address:
+            type: string
+            example: "Address"
+          pincode:
+            type: string
+            example: "Pincode"
+        example: { "address": "Address", "pincode": "Pincode" }
+
+paths:
+  /auth/login:
+    post:
+      tags:
+        - Auth
+      summary: Login
+      description: Login to the application
+      parameters:
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              email:
+                type: string
+              password:
+                type: string
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Successful login
+        401:
+          description: Invalid password or username
+
+  /auth/test:
+    get:
+      tags:
+        - Auth
+      summary: Test
+      description: Test route
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Successful login
+
+  /user/getuserdata:
+    get:
+      tags:
+        - User
+      security:
+        - bearerAuth: []
+      summary: Get user data
+
+      responses:
+        200:
+          description: Return the user data
+        404:
+          description: User not found / Unauthorized
+
+  /user/getcart:
+    get:
+      tags:
+        - Cart
+      security:
+        - bearerAuth: []
+      summary: Get cart
+      description: Get cart
+
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Return the cart
+        404:
+          description: User not found / Unauthorized
+
+  /user/becomeaseller:
+    post:
+      tags:
+        - User
+      security:
+        - bearerAuth: []
+      summary: Become a seller
+      description: Become a seller
+      parameters:
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              shop_name:
+                type: string
+              gst_id:
+                type: string
+              pickup_address:
+                type: object
+
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Successful became a seller
+        401:
+          description: Invalid password or username
+
+  /product/addreview:
+    post:
+      tags:
+        - Product
+      Summary: Add a review to a product
+      Description: Add a review to a product
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: body
+          name: body
+          description: The user to Add review in the Product
+          schema:
+            type: object
+            properties:
+              product_id:
+                type: string
+              star:
+                type: number
+              description:
+                type: string
+
+      Consumes:
+        - application/json
+      Produces:
+        - application/json
+
+  /user/addtowishlist:
+    post:
+      tags:
+        - Wishlist
+      security:
+        - bearerAuth: []
+      summary: Add wishlist
+      description: Add wishlist
+      parameters:
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              product_id:
+                type: string
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Successful added wishlist
+        401:
+          description: Invalid password or username
+
+  /user/getwishlist:
+    get:
+      tags:
+        - Wishlist
+      security:
+        - bearerAuth: []
+      summary: Get wishlist
+      description: Get wishlist
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Return the user data
+        404:
+          description: User not found / Unauthorized
+
+  /user/movetowishlist:
+    post:
+      tags:
+        - Wishlist
+      security:
+        - bearerAuth: []
+      Summary: Move wishlist
+      Description: Move a product to wishlist
+      parameters:
+        - in: body
+          name: body
+          description: Move product to wishlist
+          schema:
+            type: object
+            properties:
+              cart_id:
+                type: string
+
+      Consumes:
+        - application/json
+      Produces:
+        - application/json
+
+  /user/removefromwishlist:
+    delete:
+      tags:
+        - Wishlist
+      security:
+        - bearerAuth: []
+      Summary: Remove from wishlist
+      Description: Remove from wishlist
+      parameters:
+        - in: body
+          name: body
+          description: Remove a product from wishlist
+          schema:
+            type: object
+            properties:
+              product_id:
+                type: string
+
+      Consumes:
+        - application/json
+      Produces:
+        - application/json
+
+  /product/addproduct:
+    post:
+      tags:
+        - Product
+      security:
+        - bearerAuth: []
+      summary: Add product
+      description: Add product
+      parameters:
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              title:
+                type: string
+              price:
+                type: number
+              specification:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                    value:
+                      type: string
+
+              images:
+                type: array
+                items:
+                  type: string
+              various_size:
+                type: array
+                items:
+                  type: string
+              requiredAttachments:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    title:
+                      type: string
+                    description:
+                      type: string
+
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Successful added product
+        401:
+          description: Invalid password or username
+
+  /user/addAddress:
+    post:
+      tags:
+        - User
+      security:
+        - bearerAuth: []
+      summary: Add address
+      parameters:
+        - in: body
+          name: body
+          description: Add address
+          schema:
+            type: object
+          properties:
+            Address:
+              type: string
+            pincode:
+              type: string
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Return the user data
+        404:
+          description: User not found / Unauthorized
+
+  /product/gettoppicks:
+    get:
+      tags:
+        - Product
+      summary: Get top picks
+      parameters:
+        - in: query
+          name: limit
+          description: Get top picks
+          schema:
+            type: integer
+            description: Set Limitation for the number of products
+      responses:
+        200:
+          description: Return the top picks
+        404:
+          description: User not found / Unauthorized
+
+  /product/getproductbyid:
+    get:
+      tags:
+        - Product
+      summary: Get product by id
+      parameters:
+        - in: query
+          name: product_id
+          description: Pass product id
+          schema:
+            type: string
+            description: get product data from the product id
+
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Return the product data
+        404:
+          description: Product not found / Unauthorized
+  /auth/signup:
+    post:
+      tags:
+        - Auth
+      summary: Sign up
+      description: Sign up to the application
+      parameters:
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              name:
+                type: string
+              mobile:
+                type: number
+              email:
+                type: string
+              password:
+                type: string
+
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Successful sign in
+        401:
+          description: Invalid password or username
+
+  /user/addtocart:
+    post:
+      tags:
+        - Cart
+      security:
+        - bearerAuth: []
+      summary: Add to cart
+      description: Add to cart
+      parameters:
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              product_id:
+                type: string
+              size:
+                type: string
+              attachedFiles:
+                type: array
+                items:
+                  type: string
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Successful added to cart
+        401:
+          description: Invalid password or username
+
+  /user/removefromcart:
+    delete:
+      tags:
+        - Cart
+      security:
+        - bearerAuth: []
+      summary: Remove from cart
+      description: Remove from cart
+      parameters:
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              cart_id:
+                type: string
+
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Successful removed from cart
+        401:
+          description: Invalid password or username
+  /order/getorderbyid:
+    get:
+      tags:
+        - Order
+      security:
+        - bearerAuth: []
+      summary: Get order by id
+      description: Get order by id
+      parameters:
+        - in: query
+          name: order_id
+          description: Pass order id
+          schema:
+            type: string
+            description: get order data from the order id
+
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Return the order data
+        404:
+          description: Order not found / Unauthorized
+  /order/getorderforseller:
+    get:
+      tags:
+        - Order
+      security:
+        - bearerAuth: []
+      summary: Get order for seller
+      description: Get order for seller
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Return the order data
+        404:
+          description: Order not found / Unauthorized
+
+  /order/getorderforuser:
+    get:
+      tags:
+        - Order
+      security:
+        - bearerAuth: []
+      summary: Get order for user
+      description: Get order for user
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Return the order data
+        404:
+          description: Order not found / Unauthorized
+  /product/atlassearch:
+    get:
+      tags:
+        - Product
+      summary: Search product
+      description: Search product
+      parameters:
+        - in: query
+          name: query
+          schema:
+            type: string
+
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Return the product data
+        404:
+          description: Product not found / Unauthorized
+  /product/getproductseller:
+    get:
+      tags:
+        - Product
+      security:
+        - bearerAuth: []
+      summary: Get product by seller
+
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Return the product data
+        404:
+          description: Product not found / Unauthorized
+
+  /order/getAllPaymentMethods:
+    post:
+      tags:
+        - Order
+      security:
+        - bearerAuth: []
+      summary: Get all payment methods
+      description: Get all payment methods
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Return the payment methods
+        404:
+          description: Payment methods not found / Unauthorized
+      parameters:
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              country:
+                type: string
+              currency:
+                type: string
+
+  /order/addorder:
+    post:
+      tags:
+        - Order
+      security:
+        - bearerAuth: []
+      summary: Add order
+      description: Add order
+      parameters:
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              product_id:
+                type: string
+              size:
+                type: string
+              attachedFiles:
+                type: array
+                items:
+                  type: string
+              address:
+                type: object
+                properties:
+                  address:
+                    type: string
+                  pincode:
+                    type: string
+              country:
+                type: string
+              currency:
+                type: string
+              paymentMethod:
+                type: array
+                items:
+                  type: string
+
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Successful added order
+        401:
+          description: Invalid password or username
+
+  /order/markPaymentComplete:
+    post:
+      tags:
+        - Order
+      security:
+        - bearerAuth: []
+      summary: Mark payment complete
+      description: Mark payment complete
+      parameters:
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              checkout_id:
+                type: string
+              payment_id:
+                type: string
+
+  /order/updatestatus:
+    put:
+      tags:
+        - Order
+      summary: Update order status
+      description: Update order status
+      parameters:
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              order_id:
+                type: string
+              status:
+                type: string
+              Textdata:
+                type: string
+              Imagedata:
+                type: array
+                items:
+                  type: string
+
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      responses:
+        200:
+          description: Return the order data
+        404:
+          description: Order not found / Unauthorized
+  /order/addcartorder:
+    post:
+      tags:
+        - Order
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: body
+          name: body
+          schema:
+            type: object
+            properties:
+              address:
+                type: object
+                properties:
+                  address:
+                    type: string
+                  pincode:
+                    type: string
+      summary: Add cart order
+      description: Add cart order
+
+  /spec:
+    get:
+      tags:
+        - Specification
+      responses:
+        200:
+          description: Return the API specification
+
+securityDefinitions:
+  bearerAuth:
+    type: apiKey
+    scheme: bearer
+    name: Authorization
+    in: header
+    description: "Enter your token here as formate 'Bearer {token}'"
