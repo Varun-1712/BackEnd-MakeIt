@@ -56,7 +56,3 @@ npm run dev
 
 <br/>
 
-## S-Rank-Coders
-### Team members: 
- * [Master Ayush](https://github.com/WeryZebra-Yue)  
- * [Raj Varsani](https://github.com/RajVarsani)
